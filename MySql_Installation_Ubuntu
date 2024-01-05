@@ -1,0 +1,49 @@
+Login to ubuntu using default user "ubuntu"
+
+Step 1: Update System Packages and Install MySQL
+
+  Run install update for your server system packages
+
+    >> sudo apt update
+
+  install MySQL using the below command to install the latest MySQL.
+
+
+    >>sudo apt-get install mysql-server -y
+
+  After successful installation of mysql-server, we can check the MySQL version by using this command
+
+    >> mysql --version
+
+
+Step 2: Configure MySQL Installation
+
+  To configure the installation of MySQL, run the security script with sudo to run as the root user- the super privileged user.
+
+  Run the below command-
+
+     >> sudo mysql_secure_installation
+
+          remove anonymous user: (press any key)
+          Disallow remote login remotely: n
+          remove test database and access to it: n
+          Reload privilege tables now: y
+
+  When we install MySQL for the first time, we will be prompted to create a new password.
+  If you are getting an error while setting up the password, check the temporary password in the log file.
+
+  Use the below command to get a temporary password.
+
+    >> cat /var/log/mysqld.log
+
+
+Step 3: Login into MySQL and Create a User
+
+    Use the below command to login into MySQL:
+
+    >> sudo mysql 
+
+The command will log in to MySQL using the root user. Once you are logged in, create a user in the MySQL database using these commands:
+
+  >> use mysql;
+  >> CREATE USER 'username'@'host' IDENTIFIED WITH mysql_native_password BY 'password';
