@@ -1,0 +1,16 @@
+Default user:
+
+Linux: ec2-user
+Ubuntu: ubuntu
+
+
+Login to aws VM:
+
+>> ssh -i <private key pem/ppk file> <username>@ipaddress
+
+
+Copy file from local to remote server:
+
+>> scp -i <private key> <localfile name> <username>@ipaddress:<path>
+  eg: ~/. -> user profile path
+ 
