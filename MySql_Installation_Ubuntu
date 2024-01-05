@@ -1,3 +1,5 @@
+Reference: https://www.bacancytechnology.com/blog/connect-mysql-to-ec2-instance
+
 Login to ubuntu using default user "ubuntu"
 
 Step 1: Update System Packages and Install MySQL
@@ -47,3 +49,68 @@ The command will log in to MySQL using the root user. Once you are logged in, cr
 
   >> use mysql;
   >> CREATE USER 'username'@'host' IDENTIFIED WITH mysql_native_password BY 'password';
+
+
+
+Step 4: Grant Access Privileges to User
+
+  Now, to grant access privileges to this newly created user, use this command:
+
+    >> GRANT ALL PRIVILEGES ON *.* TO 'username'@'host';
+    >> FLUSH PRIVILEGES;
+
+
+Step 5: Connect User with MySQL
+
+  Now you can use this user to connect with MySQL like this:
+    >> mysql -u user -p
+
+
+
+If you want to store passwords for that user, so prompting will not annoy us, do these things.
+Create .my.cnf file inside /home/Ubuntu path
+
+>> sudo nano .my.cnf
+
+Write these lines in that file and save.
+
+[mysql]
+user=username
+password=password
+
+Now, whenever you want to connect, you can use this .my.cnf file like this, and no need to provide a password.
+
+>> mysql --defaults-file=/home/ubuntu/.my.cnf -u username
+
+Step 6: Restart MySQL Service
+
+  To affect these changes, restart the MySQL service by following commands: 
+  to check the status of MySQL service:
+
+  >> systemctl status mysql.service
+
+Now, if it is in “Running” mode, then restart it using the below command:
+
+  >> sudo service mysql restart
+
+
+
+
+
+
+
+
+
+
+
+Checking the password policy:
+
+mysql> SHOW VARIABLES LIKE 'validate_password%';
+
+mysql> SET GLOBAL validate_password.policy=LOW;
+
+To make this setting permanent edit MySQL configuration (my.cnf) file and add below settings.
+[mysqld]
+validate_password.policy=LOW
+
+Save the file and restart the MySQL service to apply changes.
