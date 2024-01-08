@@ -97,20 +97,51 @@ Now, if it is in “Running” mode, then restart it using the below command:
 
 
 
+UPDATING THE DATA DIRECTORY
+----------------------------
+
+1. Stop mysql
+>> sudo service mysql stop
+2. copy the existing database directory to the new location
+>> copy -Rp /var/lib/mysql <new location path>
+
+  -R flag to copy all the files and subdirectories inside the source directory recursively. 
+  -p flag to keep the same permissions, ownership, and timestamps of the original files.
+
+3. it’s a good practice to keep a backup of the original data in case something goes wrong
+>> mv /var/lib/mysql /var/lib/mysql.bkp
+
+4. point MySQL to the new data location by editing the configuration file at /etc/mysql/mysql.conf.d/mysqld.cnf.
+
+datadir=/home/mysql     //Notably, we might have to uncomment the line if it’s commented.
+
+5. edit /etc/apparmor.d/usr.sbin.mysqld, change:
+
+/var/lib/mysql/ r,    =>>> <newdir>/mysql/ r,
+/var/lib/mysql/** /rwk, ===> <newdir>/mysql/** /rwk,
+
+6. sudo /etc/init.d/apparmor restart
+7. sudo chown -R mysql:mysql mysql
+8. sudo service mysql start
 
 
 
 
 
-
-Checking the password policy:
+CHECKING THE PASSWORD POLICY:
+--------------------------------
 
 mysql> SHOW VARIABLES LIKE 'validate_password%';
 
 mysql> SET GLOBAL validate_password.policy=LOW;
 
-To make this setting permanent edit MySQL configuration (my.cnf) file and add below settings.
+To make this setting permanent edit MySQL configuration (mysqld.cnf) file and add below settings.
 [mysqld]
 validate_password.policy=LOW
 
 Save the file and restart the MySQL service to apply changes.
+
+
+--- Uninstall password validation plugin:
+
+mysql>> UNINSTALL COMPONENT 'file://component_validate_password';
