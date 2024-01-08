@@ -145,3 +145,38 @@ Save the file and restart the MySQL service to apply changes.
 --- Uninstall password validation plugin:
 
 mysql>> UNINSTALL COMPONENT 'file://component_validate_password';
+
+
+MAINTAING USERS
+----------------
+
+1. Create new user:
+
+mysql> create user 'username'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>'
+
+host => it can have values like localhost, % (for login from anywhere), any specific host
+
+2. Check the existing user:
+
+mysql> select * from mysql.users;
+
+3. Drop user
+mysql>> DROP user '<username>'@'<host>';
+The host name part of the account name, if omitted, defaults to '%'. 
+DROP USER does not automatically close any open user sessions. Rather, in the event that a user with an open session is dropped, 
+the statement does not take effect until that user's session is closed. Once the session is closed, the user is dropped, 
+and that user's next attempt to log in fails. This is by design.
+
+DROP USER does not automatically drop or invalidate databases or objects within them that the old user created. 
+This includes stored programs or views for which the DEFINER attribute names the dropped user. 
+Attempts to access such objects may produce an error if they execute in definer security context.
+
+
+
+
+
+LOGIN TO DB:
+------------
+
+>> mysql -h host -u user -p dbname   /// this will prompt for password
+>> mysql -h host -u user -p<password> dbname /// password can be provided here in the command without any space after p.
