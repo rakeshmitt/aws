@@ -142,7 +142,7 @@ validate_password.policy=LOW
 Save the file and restart the MySQL service to apply changes.
 
 
---- Uninstall password validation plugin:
+--- Uninstall password validation plugin: -- turning off the password validation
 
 mysql>> UNINSTALL COMPONENT 'file://component_validate_password';
 
@@ -152,7 +152,7 @@ MAINTAING USERS
 
 1. Create new user:
 
-mysql> create user 'username'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>'
+mysql> create user 'username'@'<host>' IDENTIFIED WITH mysql_native_password BY '<password>';
 
 host => it can have values like localhost, % (for login from anywhere), any specific host
 
@@ -170,6 +170,13 @@ and that user's next attempt to log in fails. This is by design.
 DROP USER does not automatically drop or invalidate databases or objects within them that the old user created. 
 This includes stored programs or views for which the DEFINER attribute names the dropped user. 
 Attempts to access such objects may produce an error if they execute in definer security context.
+
+4. GRANT PRIVILEGES TO USER
+
+mysql>> GRANT ALL PRIVILEGES ON <database_name>.* TO '<username>'@'<host>';
+- database_name can be * for giving access to all the database
+
+mysql>> FLUSH PRIVILEGES;
 
 
 
