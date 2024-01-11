@@ -216,3 +216,32 @@ installing the mysql client in amazonlinux
 >> sudo yum install -y mysql-community-client
 
 
+Connecting to EC2 hosted in private subnet from local machine  -- ssh jumphost
+---------------------------------------------------------------
+reference - https://medium.com/adessoturkey/how-to-connect-to-private-ec2-instance-database-via-bastion-host-5b05a256f9f7
+
+We don’t want some of our resources to be accessed from the internet, so we create them in a private subnet. 
+This is an important part in terms of security, but we also need access to these resources over the internet.
+
+The best solution is to connect your private resources via Virtual Private Network (VPN) or AWS Direct Connect. 
+But if you don’t have VPN or Direct Connect to AWS, you can use a Bastion Host (Jump Box) instead.
+
+Add below in the ~/.ssh/config file in the local machine:
+
+HOST host1
+   hostname ip1
+   user user1
+   IdentityFile ~/.ssh/<key pair>
+
+HOST host2
+   hostname ip2
+   user user2
+   IdentityFile ~/.ssh/<key pair>
+   ProxyJump host1
+
+
+the key file permission should be 400 only.
+
+now try to connect using >> ssh host2
+
+
