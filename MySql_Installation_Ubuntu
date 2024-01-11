@@ -180,10 +180,16 @@ mysql>> FLUSH PRIVILEGES;
 
 
 
-
-
 LOGIN TO DB:
 ------------
 
 >> mysql -h host -u user -p dbname   /// this will prompt for password
 >> mysql -h host -u user -p<password> dbname /// password can be provided here in the command without any space after p.
+
+
+Allowing mysql to connect from anywhere or specific ip:
+---------------------------------------------------------
+
+
+
+
