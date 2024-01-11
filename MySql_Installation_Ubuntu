@@ -189,6 +189,26 @@ LOGIN TO DB:
 
 Allowing mysql to connect from anywhere or specific ip:
 ---------------------------------------------------------
+Check the mysql listening status:
+
+>>sudo netstat -tlnp
+
+if netstat is not installed then use below command:
+
+>> sudo apt-get install net-tools
+
+
+By default mysql accept connect only from localhost as the bind-address in /etc/mysql/mysql.conf.d/mysqld.cnf
+
+set the bind-address to 0.0.0.0 (to allow connection from anywhere) or specific ip address
+
+
+then start the service
+>> sudo systemctl restart mysql.service
+
+
+installing the mysql client in amazonlinux
+-----------------------------------------
 
 
 
