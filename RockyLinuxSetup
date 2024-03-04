@@ -1,0 +1,22 @@
+RockyLinux is a light weight RHEL version. It can be setup locally over virtual box.
+
+Install VirtualBox 6.x 
+Install vagrant
+
+MACOS:
+------
+
+>> brew install vagrant --cask
+
+>> mkdir vagrant/rockylinux
+>> cd vagrant/rockylinux
+
+>> vagrant init generic/rocky8
+>> vagrant up
+>> vagrant ssh
+
+incase vm got some issue:
+>> vagrant global-status
+this will list the vm id.
+
+>> vagrant destroy <vm id>
