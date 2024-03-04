@@ -1,0 +1,15 @@
+Create a new user and assign sudo access in linux:
+
+>> useradd -m <username>
+	-m option creats the home directory
+>>passwd <username>
+
+Incase user is not able to ssh from remote machine and getting access denied check below details:
+
+>> cd /etc/ssh
+>> vi sshd_config
+Look for Allowuser: (either comment this line or set to *)
+
+To give sudo access to user, execute below command:
+
+Echo ‘<username> ALL=(ALL) NOPASSWD: ALL’ >> /etc/sudoers
