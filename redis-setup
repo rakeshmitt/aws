@@ -40,3 +40,70 @@ Steps to install Redis6 on RHEL:
 >>mkdir /etc/redis
 >>cp /usr/local/src/redis-6.2-rc2/redis.conf /etc/redis/
 >> vi /etc/redis/redis.conf
+
+find the supervised line and change it to supervised systemd
+
+//sample file snippet:
+
+######################################
+# If you run Redis from upstart or systemd, Redis can interact with your
+# supervision tree. Options:
+#   supervised no      - no supervision interaction
+#   supervised upstart - signal upstart by putting Redis into SIGSTOP mode
+#                        requires "expect stop" in your upstart job config
+#   supervised systemd - signal systemd by writing READY=1 to $NOTIFY_SOCKET
+#                        on startup, and updating Redis status on a regular
+#                        basis.
+#   supervised auto    - detect upstart or systemd method based on
+#                        UPSTART_JOB or NOTIFY_SOCKET environment variables
+# Note: these supervision methods only signal "process is ready."
+#       They do not enable continuous pings back to your supervisor.
+#
+# The default is "no". To run under upstart/systemd, you can simply uncomment
+# the line below:
+#
+# supervised auto
+supervised systemd
+# If a pid file is specified, Redis writes it where specified at startup
+# and removes it at exit.
+#
+# When the server runs non daemonized, no pid file is created if none is
+# specified in the configuration. When the server is daemonized, the pid file
+# is used even if not specified, defaulting to "/var/run/redis.pid".
+#
+# Creating a pid file is best effort: if Redis is not able to create it
+# nothing bad happens, the server will start and run normally.
+#
+# Note that on modern Linux systems "/run/redis.pid" is more conforming
+#####################################################
+
+7. Create Redis system file
+----------------------------
+
+>> vi /etc/systemd/system/redis.service
+
+[Unit]
+ Description=Redis Data Store
+ After=network.target
+ [Service]
+ User=redis
+ Group=redis
+ ExecStart=/usr/local/bin/redis-server /etc/redis/redis.conf
+ ExecStop=/usr/local/bin/redis-cli shutdown
+ ReadWritePaths=-/datastore/redis
+ Restart=always
+ [Install]
+ WantedBy=multi-user.target
+
+
+8. Enable and start redis
+-------------------------
+>> sudo systemctl enable redis
+>> sudo systemctl start redis
+>> sudo systemctl status redis
+
+
+Ref: https://azdigi.com/blog/en/linux-server-en/how-to-install-redis-6-on-centos-7/
+
+
+
