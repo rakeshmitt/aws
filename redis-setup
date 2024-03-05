@@ -1,0 +1,42 @@
+Steps to install Redis6 on RHEL:
+
+1. Update the system:
+--------------------
+>> dnf update
+>> dnf install gcc make wget tcl
+
+2. Install Redis 6.
+------------------
+>> cd /usr/local/src
+>> wget https://github.com/redis/redis/archive/6.2-rc2.tar.gz
+>> tar xf 6.2-rc2.tar.gz
+>> cd redis-6.2-rc2
+
+3. Use make to compile the redis
+-------------------------------
+>> make
+-- if make is successfull we will get a message like "[Hint] - It is a good idea to run make test :)"
+>> make test
+--sometimes this fails due to missing libraries required by make test. continue with the next steps.
+>> make install
+-- this is to install the redis binaries
+
+4. Create redis user
+------------------------
+
+>> groupadd redis
+>> adduser --system -g redis --no-create-home redis
+
+5. Create Data directory
+------------------------
+>> mkdir -p /var/lib/redis
+>> chown redis: /var/lib/redis
+>> chmod 770 /var/lib/redis
+
+--- /var/lib/redis is the default data directory; we can have a custom one also.
+
+6. Creating Redis Configuration File
+--------------------------------------
+>>mkdir /etc/redis
+>>cp /usr/local/src/redis-6.2-rc2/redis.conf /etc/redis/
+>> vi /etc/redis/redis.conf
