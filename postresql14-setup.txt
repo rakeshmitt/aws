@@ -1,0 +1,36 @@
+1. Update the OS
+>> sudo dnf update
+
+2. List the default built-in module of postgresql
+>> sudo dnf module list postgresql 
+We might note that postgreql 14 is not part of the default postgres avaiable version
+
+3. Include postgresql-14 repository
+>> sudo dnf install -y https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+
+4. To avoid any conflicts from the default postgresql module plugin, lets disable it
+>> sudo dnf -qy module disable postgresql
+
+5. Install postgresql and additional features:
+>> sudo dnf install -y postgresql14-server
+>> sudo dnf install -y postgresql14-contrib  (additional features)
+
+6. Initializing the postgresql18
+>> sudo /usr/pgsql-14/bin/postgresql-14-setup initdb
+
+7. Start and enable the postgresql
+>> sudo systemctl start postgresql-14
+>> sudo systemctl enable postgresql-14
+>> sudo systemctl status postgresql-14
+
+Not postgresql installation is completed. Lets make the first connect to postgresql
+
+>> sudo su - postgres
+>> psql
+
+to directly access the psql, we can do as below:
+>> sudo su - postgres psql
+
+
+Reference: https://www.ubuntumint.com/install-postgresql-rhel/#:~:text=Installing%20PostgreSQL%20in%20RHEL%208&text=To%20include%20PostgreSQL%2014%20module,set%20up%20its%20associated%20repository.&text=The%20default%20built%2Din%20PostgreSQL,make%20sure%20it%20is%20disabled.&text=We%20can%20now%20proceed%20with,the%20PostgreSQL%2014%20database%20server.
+
