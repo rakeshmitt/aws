@@ -60,7 +60,23 @@ a. since next few commands need to be run as sudo, so switch to sudo user
 $sudo su -
 
 b. Now lets add a GPG key that is used to verify the integrity of the downloaded package
-$
+$wget -O - https://swupdate.openvpn.net/repos/repo-public.gpg|apt-key add -
+
+c. then add openvpn ubuntu repository; it is best practice to create a separate list
+$echo "deb http://build.openvpn.net/debian/openvpn/stable focal main" > /etc/apt/sources.list.d/openvpn-aptrepo.list
+
+d. Now perform apt update to check what is available now.
+$apt update
+
+e. then exit from root user
+
+f. now check again the available version of openvpn
+$apt policy openvpn
+
+
+
+
+
 
 
 
