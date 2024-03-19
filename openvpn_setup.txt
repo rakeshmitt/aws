@@ -73,6 +73,45 @@ e. then exit from root user
 f. now check again the available version of openvpn
 $apt policy openvpn
 
+g. Now install the latest availble version; optionally specify the version with = sign
+$sudo apt install openvpn=2.6.9-focal0
+
+#####
+this command may throw this error:
+The following packages have unmet dependencies:
+ openvpn : Depends: libssl1.1 (>= 1.1.1) but it is not installable
+E: Unable to correct problems, you have held broken packages.
+#####
+
+to resolve this issue run below command: (Ubuntu 22.04 has upgraded libssl to 3 and does not propose libssl1.1)
+$echo "deb http://security.ubuntu.com/ubuntu focal-security main" | sudo tee /etc/apt/sources.list.d/focal-security.list
+$Sudo apt-get update
+$sudo apt-get install libssl1.1
+
+Then rerun the command "sudo apt install openvpn=2.6.9-focal0"
+Once installed, delete the focal-security list file just created: 
+$sudo rm /etc/apt/sources.list.d/focal-security.list
+
+
+5. Managing public Key
+-----------------------
+Some kind of tool is required to manage the public Key Infrastructure (PKI). It is very common to use easy-rsa with openvpn; since it is a tool built by openVPN community.
+However we can use the  CFSSL, openssl or any other option to maintain certificates. lets try with easy-rsa option.
+
+    5.1 easy-rsa
+    -------------
+    a. $apt policy easy-rsa
+    b. check the latest available version from https://github.com/OpenVPN/easy-rsa
+    c. lets just download the tarball and place it
+    $wget https://github.com/OpenVPN/easy-rsa/releases/download/v3.1.7/EasyRSA-3.1.7.tgz
+    $tar -zxf EasyRSA-3.1.7.tgz
+    clean up the .tgz file.
+    d. Move the EasyRSA under openvpn
+    $mv EasyRSA-3.1.7/ /etc/openvpn/easy-rsa
+
+
+
+
 
 
 
