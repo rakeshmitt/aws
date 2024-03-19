@@ -1,1 +1,73 @@
+Ubuntu based linux
+-----------------
+
+1. Initial Steps:
+------------------
+
+a. provision a ec2 instance in private subnet (without assigning a public ip)
+b. security rule should have below inbound rules:
+Port range      protocol      source
+22              SSH            0.0.0.0/0
+1194            UDP            0.0.0.0/0
+3. Allocate an elastic ip and associate it with this vm.
+
+
+
+2. Key pem to ppk or vice-versa
+-------------------------------
+
+a. key created has 2 formats either ppk or pem.
+b. putty supports .ppk format whereas openssh support .pem format.
+c. Depending on the format, it might need to be converted to the other format using puttygen command.
+d. change the permission of the file to 600 (rw-------)
+e. run below puttygen command:
+$puttygen <keyname>.ppk -O private-openssh -o <keyname>.pem
+OR
+$puttygen <keyname>.pem -O private-openssh -o <keyname>.ppk
+
+
+
+3. Connect to VM
+------------------
+
+a. ssh -i <keyname> ubuntu@<VM public ip>
+b. once connected run
+$sudo apt update
+c. check the status of openvpn
+$apt policy ovenvpn
+
+output of the above command:
+
+#####
+openvpn:
+  Installed: (none)
+  Candidate: 2.5.9-0ubuntu0.22.04.2
+  Version table:
+     2.5.9-0ubuntu0.22.04.2 500
+        500 http://ap-south-1.ec2.archive.ubuntu.com/ubuntu jammy-updates/main amd64 Packages
+     2.5.5-1ubuntu3 500
+        500 http://ap-south-1.ec2.archive.ubuntu.com/ubuntu jammy/main amd64 Packages
+######
+default vpn repository contains openvpn 2.5.9 which may not be the latest one; so check its latest available version in:
+https://github.com/OpenVPN/openvpn/tags
+
+
+
+4. Installing the openvpn
+-----------------------
+
+a. since next few commands need to be run as sudo, so switch to sudo user
+$sudo su -
+
+b. Now lets add a GPG key that is used to verify the integrity of the downloaded package
+$
+
+
+
+
+
+
+
+
+
 
