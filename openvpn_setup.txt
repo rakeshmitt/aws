@@ -106,8 +106,88 @@ However we can use the  CFSSL, openssl or any other option to maintain certifica
     $wget https://github.com/OpenVPN/easy-rsa/releases/download/v3.1.7/EasyRSA-3.1.7.tgz
     $tar -zxf EasyRSA-3.1.7.tgz
     clean up the .tgz file.
-    d. Move the EasyRSA under openvpn
-    $mv EasyRSA-3.1.7/ /etc/openvpn/easy-rsa
+    d. Move the EasyRSA under openvpn (since we would be using the same tool for certificate generation)
+    $sudo mv EasyRSA-3.1.7/ /etc/openvpn/easy-rsa
+
+    e. optionally, we can create a softlink to /usr/local/bin
+    $sudo ln -s /etc/openvpn/easy-rsa/easyrsa /usr/local/bin
+    $easyrsa --version (to confirm it is ready to use)
+
+    f. The first step with easyrsa is to first initialize the folder for keys and certificates
+    $cd /etc/openvpn/easy-rsa/
+    $easyrsa init-pki
+
+    g. We can create vars file to customize the certificates
+    $vim vars
+
+      ###
+        set_var EASYRSA_REQ_COUNTRY     "IN"
+        set_var EASYRSA_REQ_STATE       "AS"
+        set_var EASYRSA_REQ_CITY        "Rangapara"
+        set_var EASYRSA_REQ_ORG         "rakesh"
+        set_var EASYRSA_REQ_EMAIL       "rakesh1@rakesh.com"
+        set_var EASYRSA_REQ_OU          "MittalSoft"
+        set_var EASYRSA_ALGO            "ec"
+        set_var EASYRSA_REQ_DIGEST      "sha512"
+      ###
+
+    note here that Algo, we are using is ec (elliptic curve); ec cryptography provides more security and eliminates the need for Diffie-Hellman parameters file.
+    if anyone gets access to the private key, they will be able to issue a certificate and connect to openvpn.
+
+    h. ideally when we generate a key we should always provide a passphrase as that is the password. However for demo purpose we can generate certificate with "nopass" with gate-sso.
+
+        $easyrsa build-ca nopass
+
+      all the private keys including ca key will be stored in pki/private folder.
+
+    i. Since we are using the public key cryptography, we need to generate certificate for both server and client. Lets create one for server first (using same nopass option)
+
+      In the case of client/servers certs, it is a two step process-
+          i) first generate keypair with a certificate request
+               $easyrsa gen-req openvpn-server nopass
+          ii) then use ca to sign the certificate request and issue a valid certificate.
+               $easyrsa sign-req server openvpn-server
+
+    j. the next step is to create another secret that is not related to PKI. Its called ta.key. It is kind of a crypto firewall. Each packet going over the internet will be signed
+      using a shared secret on both server and client. when openvpn receives a packet, it will calculate the signature and check it against the signature provided in the received packet.
+      If it doesn't match, openvpn will drop the packet. When coupled with UDP, this can be a good way to avoid troubles with port scanner as it will not see the openvpn port at all.
+      This process is also a good way to protect against the unknown bugs in the ssl library and protocols as it reduces the attack surface to only your own user. 
+
+        $openvpn --genkey secret ta.key
+
+      Enabling TLS authentication is highly recommended. The secret needs to be securely copied to all openVPN server and client.
+
+    k. To function properly, we need to make sure IP forwarding is enabled. By default it is commented out in Ubuntu 20.04 and above.
+
+      $sudo vim /etc/sysctl.conf
+      ###
+        uncomment below line
+         net.ipv4.ip_forward=1
+      ###
+      $sudo sysctl -p
+
+    l. We need to configure an iptable rule to use this server as NAT to translate client IP to openvpn server ip. That is a reason why we use the openvpn security group as a source for any instance in our vpc.
+        lets list some default policies
+
+      $sudo iptables -t nat -S
+    ######
+       -P PREROUTING ACCEPT
+       -P INPUT ACCEPT
+       -P OUTPUT ACCEPT
+       -P POSTROUTING ACCEPT
+    ######
+
+    by default, they all set to ACCEPT.
+
+    
+      
+
+
+  
+
+    
+    
+  
 
 
 
