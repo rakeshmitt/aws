@@ -297,7 +297,13 @@ push "dhcp-option DNS 10.0.0.2"
 ######################
 
     
+Lets check if we have nobody user and nogroup.
 
+$cat /etc/passwd | grep nobody
+#########
+ubuntu@ip-10-0-0-61:~$ cat /etc/passwd | grep nobody
+nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
+##########
     
 
     
