@@ -311,6 +311,9 @@ Now start the openVPN server
 
 $sudo systemctl start openvpn-server@server
 
+enable service to start the openVPN server automatically after vm reboot.
+
+$sudo systemctl enable openvpn-server@server
 
     
       
