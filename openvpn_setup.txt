@@ -305,6 +305,12 @@ ubuntu@ip-10-0-0-61:~$ cat /etc/passwd | grep nobody
 nobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin
 ##########
     
+$cat /etc/group | grep nogroup
+
+Now start the openVPN server
+
+$sudo systemctl start openvpn-server@server
+
 
     
       
