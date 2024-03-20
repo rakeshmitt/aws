@@ -197,7 +197,106 @@ However we can use the  CFSSL, openssl or any other option to maintain certifica
         $sudo apt-get install iptables-persistent
 
 
-  m. Configuring the main vpn server:
+  m. Configuring the main vpn server: (this will be the main configuration for the server)
+---------------------------------------
+
+    $sudo vim /etc/openvpn/server/server.conf
+
+#####################
+
+# Port for openVPN
+port 1194
+
+#protocol, can be tcp or udp (generally it is udp)
+proto udp
+
+#It will create a routed IP tunnel; possible values are tap or tun
+# TAP -> if we want to transport non-IP based traffic or IPV6 traffic on openvpn2.2 or older releases or want to bridge.
+dev tun
+
+#Location of the certificate Authority(can use relative or full path)
+# we can even insert cert inline in the config;
+ca /etc/openvpn/easy-rsa/pki/ca.crt
+
+#Location of the openVPN certificate
+cert /etc/openvpn/easy-rsa/pki/issued/openvpn-server.crt
+
+#Location of the openvpn private key
+key /etc/openvpn/easy-rsa/pki/private/openvpn-server.key
+
+#disable Diffie Hellman since we are using elliptic curves certificate
+dh none
+
+# Location of the ta secret that used it is used as an additional HMAC signature#to all SSL/TLS handshake packets for integrity verification. 
+# value should be 0 on the server and 1 on the client
+tls-crypt /etc/openvpn/easy-rsa/ta.key 0
+
+# cipher to use; Auth used to authenticate received packages
+cipher AES-256-GCM
+auth SHA256
+
+
+#Virtual network config, ip range and a mask. It will be /24. 
+# It will give us 256 hosts that's how many client you can connect at the same time
+#
+# configure server mode to supply vpn subnet
+# for OpenVPN to draw client addresses from.
+server 10.8.0.0 255.255.255.0
+
+#location to save records of the client virtual ip addresses
+ifconfig-pool-persist /var/log/openvpn/ipp.txt
+
+#ping like messages to be sent back and forth to check the status
+keepalive 10 120
+
+# used reduce the openVPN daemon's privileges after initialization
+# if we dont set the user and group to nobody or nogroup openVPN server fail to start
+user nobody
+group nogroup
+
+#persist certain options that may no longer  be available because of the privileges downgrade
+persist-key
+persist-tun
+
+# show current connections; status location can be used by prometheus exporter
+# to extract current usage and visualize it in grafana
+status /var/log/openvpn/openvpn-status.log
+
+#Log verbosity
+verb 3
+
+#Notify the client when the server restarts so it can 
+explicit-exit-notify 1
+
+#network topology -- set to subnet if we dont need to support legacy windows clients
+topology subnet
+
+# most important part of configuring the server; push routes to the client of the available subnets in AWS. We had created public subnet 10.0.0.0/22; which translates to 255.255.252.0 subnet mask. 
+#This particular route needs to be pushed if we want to access the private ip addresses of VMs in that public subnet.
+ 
+#push route from AWS, 10.0.0.0/22
+push "route 10.0.0.0 255.255.252.0"
+
+
+# Next route for a private-large subnet with 240 subnet mask.
+
+#push route from AWS 10.0.16.0/20
+push "route 10.0.16.0 255.255.240.0"
+
+#10.0.32.0 is private-small aws subnet.
+#push route from AWS 10.0.32.0/24
+push "route 10.0.32.0 255.255.255.0"
+
+
+#push AWS nameserver since we want to use private hosted zone
+# we want to able to resolve private Route53 hostnames. Hence need to push the DNS server IP address to the client.
+# Route53 DNS IP is always VPC CIDR plus 2, which in our case is 10.0.0.2
+
+push "dhcp-option DNS 10.0.0.2"
+
+######################
+
+    
 
     
 
