@@ -179,6 +179,28 @@ However we can use the  CFSSL, openssl or any other option to maintain certifica
 
     by default, they all set to ACCEPT.
 
+    We can use high level firewall tools like UFW (Uncomplicated firewall); however if we enable, it will create bunch of rules. Here we would create only one iptable rule for now.
+    Before adding the rule, we need to find the network interface used in the vm.
+
+    $ip route list default
+    ### output would be something like below.
+    default via 10.0.0.1 dev eth0 proto dhcp src 10.0.0.61 metric 100
+    ###
+    here it is network interface is eth0.
+
+    ----Create a nat rule that would translate all the ip range coming from 10.8.0.0/24 to openVPN ubuntu server ip. This range is a virtual network that we would define later for vpn.
+
+    $sudo iptables -t nat -I POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+
+    All the client and OpenVPN server will get ip from this range. If we are using plain iptables, we need to find a way to persists these rule and apply them after the reboot. One way to do this is the use of iptables-persistent package. It will ask to save ipv4 and ipv6 iptable rules. 
+
+        $sudo apt-get install iptables-persistent
+
+
+  m. Configuring the main vpn server:
+
+    
+
     
       
 
