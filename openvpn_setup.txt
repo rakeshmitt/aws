@@ -380,6 +380,26 @@ content of ca.crt
 
 #####################
 
+for debugging purpose, we can list all network routes on the client machine
+
+$netstat -r 
+
+if success, it will all the private and public subnet routes pushed to the client.
+
+
+
+Now openVPN setup is ready. We can provision a vm in private subnet with security group having source only to openvpn server security group.
+
+We should be able to connect to private ec2 instance if we are connected to openvpn client:
+
+ssh -i <private key> username@vm ip
+
+
+
+
+
+Reference:
+https://www.youtube.com/watch?v=yaXiAqH-4LE
 
     
       
