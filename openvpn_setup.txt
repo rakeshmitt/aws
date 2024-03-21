@@ -398,6 +398,19 @@ ssh -i <private key> username@vm ip
 
 
 
+
+
+Revoke openvpn server access:
+
+$easyrsa revoke <clientname>
+$easyrsa gen-crl
+### keep a note of the location.
+
+add the location of the revoked certificate location at the end of the server.conf file:
+-- crl-verify /etc/openvpn/easy-rsa/pki/crl.pem
+
+
+
 Reference:
 https://www.youtube.com/watch?v=yaXiAqH-4LE
 
