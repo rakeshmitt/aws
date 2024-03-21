@@ -315,6 +315,72 @@ enable service to start the openVPN server automatically after vm reboot.
 
 $sudo systemctl enable openvpn-server@server
 
+
+n. Lets create first client profile; generate a client certificate (we have to bein the openvpn/easy-rsa directory to run these commands)
+
+$easyrsa gen-req <clientname> nopass
+
+take a note of the key and cert path; we would need them later to extract keys and certificates.
+
+next sign the certificate:
+$easyrsa sign-req client <clientname>
+
+Next create a profile with .ovpn extension. We can install the openvpn client such as tunelblick on `mac. We need to indicate that it is a client profile.
+
+
+rakeshm.ovpn
+######################
+client
+dev tun
+proto udp
+; here use the public ip address of the openvpn or create a hostname and use that hostname
+remote <public ip of the openvpn server>
+resolv-retry infinite
+nobind
+persist-key
+persist-tun
+remote-cert-tls server
+cipher AES-256-GCM
+auth SHA256
+key-direction 1
+verb 3
+
+; these scripts need to be uncomment out based on the system; for mac and windows below is not required
+; if LINUX client do NOT use systemd-resolved
+; script-security 2
+; up /etc/openvpn/update-resolv-conf
+; down /etc/openvpn/update-resolv-conf
+
+; if the LINUX client do use systemd-resolved
+; script-security 2
+; up /etc/openvpn/update-systemd-resolved
+; down /etc/openvpn/update-systemd-resolved
+; down-pre
+
+; next, include cert and keys; either specify the path of the content directly
+<ca>
+content of ca.crt
+</ca>
+
+;client certificate
+<cert>
+<content of clientname.crt>
+</cert>
+
+;private client key
+<key>
+<content of clientname.key>
+</key>
+
+; ta.key
+<tls-crypt>
+<content of ta.key>
+</tls-crypt>
+
+
+#####################
+
+
     
       
 
