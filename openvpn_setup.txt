@@ -339,7 +339,7 @@ client
 dev tun
 proto udp
 ; here use the public ip address of the openvpn or create a hostname and use that hostname
-remote <public ip of the openvpn server>
+remote <public ip of the openvpn server> <port>
 resolv-retry infinite
 nobind
 persist-key
