@@ -380,6 +380,11 @@ content of ca.crt
 
 #####################
 
+Try to connect to openvpn server using openvpn client. Check the status of the client connection logs on the server side:
+
+$journalctl --no-pager --full -u <openvpn server name>@server -f
+
+
 for debugging purpose, we can list all network routes on the client machine
 
 $netstat -r 
@@ -408,6 +413,8 @@ $easyrsa gen-crl
 
 add the location of the revoked certificate location at the end of the server.conf file:
 -- crl-verify /etc/openvpn/easy-rsa/pki/crl.pem
+
+save the file and restart the openvpn server. 
 
 
 
