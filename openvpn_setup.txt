@@ -1,6 +1,11 @@
 Ubuntu based linux
 -----------------
 
+VPC CIDR - 10.0.0.0/16
+public subnet: 10.0.0.0/22
+private subnet-1: 10.0.16.0/20
+private subnet-2: 10.0.32.0/24
+
 1. Initial Steps:
 ------------------
 
