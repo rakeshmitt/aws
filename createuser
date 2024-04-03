@@ -4,12 +4,39 @@ Create a new user and assign sudo access in linux:
 	-m option creats the home directory
 >>passwd <username>
 
+If we want to add user in a single command:
+
+>> useradd -m <username> -P passwd
+
+
 Incase user is not able to ssh from remote machine and getting access denied check below details:
 
 >> cd /etc/ssh
 >> vi sshd_config
 Look for Allowuser: (either comment this line or set to *)
 
+
+
 To give sudo access to user, execute below command:
 
 Echo ‘<username> ALL=(ALL) NOPASSWD: ALL’ >> /etc/sudoers
+
+
+Adding Group:
+-----------
+>> sudo groupadd groupname
+
+adding users to the group
+
+>> sudo usermod -a -G groupname username
+
+
+command to see the group members:
+
+>> grep groupname /etc/group
+
+
+
+Changing the group ownership:
+
+>> chgrp -R groupname folder
